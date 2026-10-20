@@ -1,3 +1,4 @@
+
 import { StatusBar } from 'expo-status-bar';
 import {
     SafeAreaView,
@@ -6,84 +7,94 @@ import {
     Text,
     View,
 } from 'react-native';
+
 import colors from '../theme/colors';
 import spacing from '../theme/spacing';
 import typography from '../theme/typography';
 
 export default function DashboardScreen() {
+    const today = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="dark" />
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.content}
+            >
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.greeting}>YOUR DAILY WELLNESS</Text>
+                        <Text style={styles.eyebrow}>
+                            YOUR WELLNESS SPACE
+                        </Text>
                         <Text style={styles.title}>HealthMate</Text>
                     </View>
 
-                    <View style={styles.profile}>
-                        <Text style={styles.profileText}>HM</Text>
+                    <View style={styles.avatar}>
+                        <Text style={styles.avatarText}>HM</Text>
                     </View>
                 </View>
 
-                <View style={styles.dateSection}>
-                    <Text style={styles.sectionTitle}>Today's overview</Text>
-                    <Text style={styles.date}>
-                        {new Date().toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                        })}
+                <View style={styles.intro}>
+                    <Text style={styles.greeting}>Your daily overview</Text>
+                    <Text style={styles.date}>{today}</Text>
+                </View>
+
+                <View style={styles.stepsCard}>
+                    <View style={styles.cardHeading}>
+                        <View style={styles.stepsIcon}>
+                            <Text style={styles.stepsIconText}>ST</Text>
+                        </View>
+                        <Text style={styles.metricLabel}>Steps walked</Text>
+                    </View>
+
+                    <Text style={styles.stepsValue}>7,850</Text>
+
+                    <View style={styles.goalRow}>
+                        <Text style={styles.mutedText}>
+                            Daily goal: 10,000 steps
+                        </Text>
+                        <Text style={styles.goalPercent}>78.5%</Text>
+                    </View>
+
+                    <View style={styles.progressTrack}>
+                        <View style={styles.progressFill} />
+                    </View>
+                </View>
+
+                <Text style={styles.sectionTitle}>Today's activity</Text>
+
+                <View style={styles.metricsRow}>
+                    <View style={styles.metricCard}>
+                        <View style={styles.caloriesIcon}>
+                            <Text style={styles.caloriesIconText}>CA</Text>
+                        </View>
+                        <Text style={styles.metricLabel}>Calories</Text>
+                        <Text style={styles.metricValue}>420</Text>
+                        <Text style={styles.unit}>kcal burned</Text>
+                    </View>
+
+                    <View style={styles.metricCard}>
+                        <View style={styles.waterIcon}>
+                            <Text style={styles.waterIconText}>WA</Text>
+                        </View>
+                        <Text style={styles.metricLabel}>Water intake</Text>
+                        <Text style={styles.metricValue}>2,000</Text>
+                        <Text style={styles.unit}>ml consumed</Text>
+                    </View>
+                </View>
+
+                <View style={styles.tipCard}>
+                    <Text style={styles.tipTitle}>Build healthy habits</Text>
+                    <Text style={styles.tipDescription}>
+                        Track your daily activity to understand your
+                        progress and stay consistent with your goals.
                     </Text>
-                </View>
-
-                <View style={styles.card}>
-                    <Text style={styles.cardLabel}>Steps walked</Text>
-                    <Text style={styles.cardValue}>7,850</Text>
-                    <Text style={styles.cardDescription}>
-                        of 10,000 steps
-                    </Text>
-                    <View style={styles.progressBackground}>
-                        <View style={[styles.progressFill, { width: '78.5%' }]} />
-                    </View>
-                </View>
-
-                <View style={styles.row}>
-                    <View style={[styles.smallCard, styles.caloriesCard]}>
-                        <Text style={styles.cardLabel}>Calories</Text>
-                        <Text style={styles.smallValue}>420</Text>
-                        <Text style={styles.cardDescription}>kcal burned</Text>
-                    </View>
-
-                    <View style={[styles.smallCard, styles.waterCard]}>
-                        <Text style={styles.cardLabel}>Water intake</Text>
-                        <Text style={styles.smallValue}>2,000</Text>
-                        <Text style={styles.cardDescription}>ml consumed</Text>
-                    </View>
-                </View>
-
-                <View style={styles.activitySection}>
-                    <Text style={styles.sectionTitle}>Daily activity</Text>
-                    <Text style={styles.activityDescription}>
-                        Keep building healthy habits. Small steps make a difference.
-                    </Text>
-
-                    <View style={styles.activityRow}>
-                        <Text style={styles.activityName}>Steps goal</Text>
-                        <Text style={styles.activityAmount}>78.5%</Text>
-                    </View>
-
-                    <View style={styles.activityRow}>
-                        <Text style={styles.activityName}>Water goal</Text>
-                        <Text style={styles.activityAmount}>80%</Text>
-                    </View>
-                </View>
-
-                <View style={styles.navigation}>
-                    <Text style={styles.navActive}>Dashboard</Text>
-                    <Text style={styles.navItem}>Records</Text>
-                    <Text style={styles.navItem}>Add record</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -95,156 +106,194 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
-
-    header: {
-        paddingHorizontal: 24,
-        paddingTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    content: {
+        paddingHorizontal: spacing.lg,
+        paddingTop: spacing.lg,
+        paddingBottom: spacing.xxl,
     },
-    greeting: {
-        color: '#718096',
-        fontSize: 11,
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: spacing.xxl,
+    },
+    eyebrow: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
         fontWeight: '600',
-        letterSpacing: 1.5,
+        letterSpacing: 1.2,
     },
     title: {
-        color: '#172B4D',
-        fontSize: 30,
+        color: colors.text,
+        fontSize: typography.title,
         fontWeight: '700',
-        marginTop: 8,
-        letterSpacing: -0.5,
+        marginTop: spacing.xs,
     },
-
-    profile: {
+    avatar: {
         width: 46,
         height: 46,
-        borderRadius: 23,
+        borderRadius: 15,
         backgroundColor: '#DCE9FF',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    profileText: {
-        color: '#2459A9',
-        fontSize: typography.title,
+    avatarText: {
+        color: colors.primary,
+        fontSize: typography.body,
         fontWeight: '700',
     },
-    dateSection: {
-        paddingHorizontal: 22,
-        marginTop: 30,
-        marginBottom: 18,
+    intro: {
+        marginBottom: spacing.lg,
     },
-    sectionTitle: {
-        color: '#172B4D',
-        fontSize: 19,
+    greeting: {
+        color: colors.text,
+        fontSize: typography.heading,
         fontWeight: '700',
     },
     date: {
-        color: '#7B8798',
-        fontSize: 13,
-        marginTop: 6,
+        color: colors.secondaryText,
+        fontSize: typography.body,
+        marginTop: spacing.xs,
     },
-    card: {
-        backgroundColor: '#FFFFFF',
-        marginHorizontal: 20,
-        padding: 22,
+    stepsCard: {
+        backgroundColor: colors.surface,
         borderRadius: 20,
-        marginBottom: 16,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: spacing.xl,
+        marginBottom: spacing.xxl,
     },
-    cardLabel: {
-        color: '#69788D',
-        fontSize: 13,
+    cardHeading: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+    },
+    stepsIcon: {
+        width: 40,
+        height: 40,
+        borderRadius: 12,
+        backgroundColor: '#DDF7EF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    stepsIconText: {
+        color: colors.steps,
+        fontSize: typography.small,
+        fontWeight: '700',
+    },
+    metricLabel: {
+        color: colors.secondaryText,
+        fontSize: typography.body,
         fontWeight: '500',
     },
-    cardValue: {
-        color: '#172B4D',
-        fontSize: 34,
+    stepsValue: {
+        color: colors.text,
+        fontSize: 38,
         fontWeight: '700',
-        marginTop: 12,
+        marginTop: spacing.lg,
+        marginBottom: spacing.md,
     },
-    cardDescription: {
-        color: '#8995A7',
-        fontSize: 12,
-        marginTop: 5,
-    },
-    progressBackground: {
-        height: 7,
-        backgroundColor: '#E7EDF5',
-        borderRadius: 10,
-        marginTop: 18,
-        overflow: 'hidden',
-    },
-    progressFill: {
-        height: 7,
-        backgroundColor: '#3678D4',
-        borderRadius: 10,
-    },
-    row: {
-        flexDirection: 'row',
-        marginHorizontal: 20,
-        gap: 12,
-    },
-    smallCard: {
-        flex: 1,
-        padding: spacing.lg,
-        borderRadius: 18,
-    },
-    caloriesCard: {
-        backgroundColor: '#FFF0EB',
-    },
-    waterCard: {
-        backgroundColor: '#E8F4FF',
-    },
-    smallValue: {
-        color: '#172B4D',
-        fontSize: 25,
-        fontWeight: '700',
-        marginTop: 14,
-    },
-    activitySection: {
-        backgroundColor: '#FFFFFF',
-        margin: 20,
-        marginBottom: 12,
-        padding: 20,
-        borderRadius: 20,
-    },
-    activityDescription: {
-        color: '#7B8798',
-        fontSize: 13,
-        lineHeight: 20,
-        marginTop: 8,
-        marginBottom: 18,
-    },
-    activityRow: {
+    goalRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 12,
+        alignItems: 'center',
+        gap: spacing.sm,
     },
-    activityName: {
-        color: '#58677D',
-        fontSize: 14,
+    mutedText: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
     },
-    activityAmount: {
-        color: '#2459A9',
-        fontSize: 14,
+    goalPercent: {
+        color: colors.steps,
+        fontSize: typography.body,
         fontWeight: '700',
     },
-    navigation: {
+    progressTrack: {
+        height: 8,
+        backgroundColor: '#E8EEF5',
+        borderRadius: 8,
+        overflow: 'hidden',
+        marginTop: spacing.md,
+    },
+    progressFill: {
+        width: '78.5%',
+        height: '100%',
+        backgroundColor: colors.steps,
+        borderRadius: 8,
+    },
+    sectionTitle: {
+        color: colors.text,
+        fontSize: typography.heading,
+        fontWeight: '700',
+        marginBottom: spacing.md,
+    },
+    metricsRow: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        backgroundColor: '#FFFFFF',
-        paddingVertical: 20,
-        marginTop: 4,
+        gap: spacing.md,
+        marginBottom: spacing.xl,
     },
-    navActive: {
-        color: '#2459A9',
-        fontSize: 13,
+    metricCard: {
+        flex: 1,
+        minWidth: 0,
+        backgroundColor: colors.surface,
+        borderRadius: 18,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: spacing.md,
+    },
+    caloriesIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: '#FFF0D6',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.md,
+    },
+    caloriesIconText: {
+        color: colors.calories,
+        fontSize: typography.small,
         fontWeight: '700',
     },
-    navItem: {
-        color: '#8995A7',
-        fontSize: 13,
-        fontWeight: '500',
+    waterIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: '#E1EDFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.md,
+    },
+    waterIconText: {
+        color: colors.water,
+        fontSize: typography.small,
+        fontWeight: '700',
+    },
+    metricValue: {
+        color: colors.text,
+        fontSize: 25,
+        fontWeight: '700',
+        marginTop: spacing.md,
+    },
+    unit: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
+        marginTop: spacing.xs,
+    },
+    tipCard: {
+        backgroundColor: '#EAF1FF',
+        borderRadius: 18,
+        padding: spacing.xl,
+    },
+    tipTitle: {
+        color: colors.text,
+        fontSize: typography.subtitle,
+        fontWeight: '700',
+        marginBottom: spacing.sm,
+    },
+    tipDescription: {
+        color: colors.secondaryText,
+        fontSize: typography.body,
+        lineHeight: 22,
     },
 });
