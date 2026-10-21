@@ -15,6 +15,8 @@ export default function App() {
   const [currentScreen, setCurrentScreen] =
     useState<ScreenName>('dashboard');
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const tabs = [
     {
       name: 'dashboard' as const,

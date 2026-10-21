@@ -75,3 +75,24 @@ export async function deleteHealthRecord(
         id
     );
 }
+
+export async function getTodayHealthRecords(): Promise<HealthRecord[]> {
+    const db = await getDatabase();
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayDate = `${year}-${month}-${day}`;
+
+    const records = await db.getAllAsync<HealthRecord>(
+        `SELECT id, date, steps, calories, water
+         FROM health_records
+         WHERE date = ?
+         ORDER BY id DESC`,
+        todayDate
+    );
+
+    return records;
+}
+
