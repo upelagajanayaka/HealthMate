@@ -12,11 +12,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+
 import {
     getAllHealthRecords,
     updateHealthRecord,
+    deleteHealthRecord,
     type HealthRecord,
 } from '../database/healthRecordService';
+
 import colors from '../theme/colors';
 import spacing from '../theme/spacing';
 import typography from '../theme/typography';
@@ -97,6 +100,43 @@ export default function RecordsScreen() {
         }
     };
 
+    const handleDeletePress = (record: HealthRecord) => {
+        Alert.alert(
+            'Delete Health Record',
+            `Are you sure you want to delete the record for ${record.date}? This action cannot be undone.`,
+            [
+                {
+                    text: 'Cancel',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await deleteHealthRecord(record.id);
+
+                            const updatedRecords = await getAllHealthRecords();
+                            setRecords(updatedRecords);
+
+                            Alert.alert(
+                                'Success',
+                                'Health record deleted successfully.'
+                            );
+                        } catch (error) {
+                            console.error('Failed to delete health record:', error);
+                            Alert.alert(
+                                'Delete failed',
+                                'Could not delete the health record. Please try again.'
+                            );
+                        }
+                    },
+                },
+            ]
+        );
+    };
+
+
 
     useEffect(() => {
         async function loadRecords() {
@@ -116,6 +156,7 @@ export default function RecordsScreen() {
 
         loadRecords();
     }, []);
+
 
     return (
         <View style={{ flex: 1 }}>
@@ -203,6 +244,22 @@ export default function RecordsScreen() {
                                     />
                                     <Text style={styles.editButtonText}>Edit</Text>
                                 </Pressable>
+
+
+                                <Pressable
+                                    style={styles.deleteButton}
+                                    onPress={() => handleDeletePress(record)}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`Delete health record for ${record.date}`}
+                                >
+                                    <Ionicons
+                                        name="trash-outline"
+                                        size={18}
+                                        color="#DC2626"
+                                    />
+                                    <Text style={styles.deleteButtonText}>Delete</Text>
+                                </Pressable>
+
                             </View>
 
                             <View style={styles.recordMetrics}>
@@ -537,4 +594,23 @@ const styles = StyleSheet.create({
         fontSize: typography.body,
         fontWeight: '600',
     },
+
+    deleteButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.xs,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#FECACA',
+        backgroundColor: '#FEF2F2',
+    },
+    deleteButtonText: {
+        color: '#DC2626',
+        fontSize: typography.body,
+        fontWeight: '600',
+    },
+
 });

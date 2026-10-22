@@ -15,16 +15,49 @@ import spacing from '../theme/spacing';
 import typography from '../theme/typography';
 
 export default function AddRecordScreen() {
-    const [date, setDate] = useState('2026-10-20');
+    const getTodayDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
     const [steps, setSteps] = useState('');
     const [calories, setCalories] = useState('');
     const [water, setWater] = useState('');
+    const [date, setDate] = useState(getTodayDate);
+
+
 
     const handleSave = async () => {
-        const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date);
+        const trimmedDate = date.trim();
+        const dateMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(trimmedDate);
+
+        if (!dateMatch) {
+            Alert.alert(
+                'Invalid date',
+                'Enter the date in YYYY-MM-DD format.'
+            );
+            return;
+        }
+
+        const year = Number(dateMatch[1]);
+        const month = Number(dateMatch[2]);
+        const day = Number(dateMatch[3]);
+
+        const parsedDate = new Date(year, month - 1, day);
+
+        const validDate =
+            parsedDate.getFullYear() === year &&
+            parsedDate.getMonth() === month - 1 &&
+            parsedDate.getDate() === day;
 
         if (!validDate) {
-            Alert.alert('Invalid date', 'Enter the date as YYYY-MM-DD.');
+            Alert.alert(
+                'Invalid date',
+                'Enter a real calendar date, such as 2026-10-22.'
+            );
             return;
         }
 
@@ -33,7 +66,10 @@ export default function AddRecordScreen() {
             calories.trim() === '' ||
             water.trim() === ''
         ) {
-            Alert.alert('Missing information', 'Please fill in all fields.');
+            Alert.alert(
+                'Missing information',
+                'Please fill in all fields.'
+            );
             return;
         }
 
@@ -57,7 +93,7 @@ export default function AddRecordScreen() {
 
         try {
             await addHealthRecord({
-                date,
+                date: trimmedDate,
                 steps: stepsValue,
                 calories: caloriesValue,
                 water: waterValue,
@@ -77,6 +113,7 @@ export default function AddRecordScreen() {
             );
         }
     };
+
 
     return (
         <ScrollView
