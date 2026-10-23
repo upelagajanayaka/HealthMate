@@ -16,6 +16,26 @@ import spacing from '../theme/spacing';
 import typography from '../theme/typography';
 
 export default function DashboardScreen() {
+
+
+    function StepProgressRing({ progress }: { progress: number }) {
+        return (
+            <View style={styles.ringOuter}>
+                <View style={styles.ringInner}>
+                    <Ionicons
+                        name="footsteps-outline"
+                        size={25}
+                        color={colors.steps}
+                    />
+                    <Text style={styles.ringPercent}>
+                        {progress.toFixed(0)}%
+                    </Text>
+                    <Text style={styles.ringLabel}>of goal</Text>
+                </View>
+            </View>
+        );
+    }
+
     const [todayTotals, setTodayTotals] = useState({
         steps: 0,
         calories: 0,
@@ -59,6 +79,8 @@ export default function DashboardScreen() {
         (todayTotals.steps / 10000) * 100,
         100
     );
+    const remainingSteps = Math.max(10000 - todayTotals.steps, 0);
+    const goalReached = todayTotals.steps >= 10000;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -70,17 +92,27 @@ export default function DashboardScreen() {
             >
                 {/* Header */}
                 <View style={styles.header}>
-                    <View>
-                        <Text style={styles.eyebrow}>
-                            YOUR WELLNESS SPACE
-                        </Text>
-                        <Text style={styles.title}>HealthMate</Text>
+                    <View style={styles.brandRow}>
+                        <View style={styles.logo}>
+                            <Ionicons
+                                name="heart"
+                                size={23}
+                                color="#FFFFFF"
+                            />
+                        </View>
+
+                        <View style={styles.brandText}>
+                            <Text style={styles.title}>HealthMate</Text>
+                            <Text style={styles.eyebrow}>
+                                YOUR DAILY WELLNESS
+                            </Text>
+                        </View>
                     </View>
 
-                    <View style={styles.logo}>
+                    <View style={styles.headerBadge}>
                         <Ionicons
-                            name="heart"
-                            size={25}
+                            name="leaf-outline"
+                            size={22}
                             color={colors.primary}
                         />
                     </View>
@@ -91,6 +123,7 @@ export default function DashboardScreen() {
                     <Text style={styles.greeting}>
                         Your daily overview
                     </Text>
+
                     <View style={styles.dateRow}>
                         <Ionicons
                             name="calendar-outline"
@@ -109,38 +142,59 @@ export default function DashboardScreen() {
                     </View>
                 )}
 
+
                 {/* Steps card */}
                 <View style={styles.stepsCard}>
-                    <View style={styles.cardHeading}>
-                        <View style={styles.stepsIcon}>
-                            <Ionicons
-                                name="footsteps-outline"
-                                size={24}
-                                color={colors.steps}
-                            />
+                    <View style={styles.heroTopRow}>
+                        <View style={styles.heroTitleGroup}>
+                            <View style={styles.stepsIcon}>
+                                <Ionicons
+                                    name="footsteps-outline"
+                                    size={22}
+                                    color={colors.steps}
+                                />
+                            </View>
+
+                            <View style={styles.headingText}>
+                                <Text style={styles.metricLabel}>
+                                    Daily steps
+                                </Text>
+                                <Text style={styles.cardSubtitle}>
+                                    Your movement today
+                                </Text>
+                            </View>
                         </View>
 
-                        <View style={styles.headingText}>
-                            <Text style={styles.metricLabel}>
-                                Steps walked
-                            </Text>
-                            <Text style={styles.cardSubtitle}>
-                                Keep moving towards your goal
-                            </Text>
+                        <View style={styles.goalBadge}>
+                            <Ionicons
+                                name="flag-outline"
+                                size={14}
+                                color={colors.steps}
+                            />
+                            <Text style={styles.goalBadgeText}>10K goal</Text>
                         </View>
                     </View>
 
-                    <Text style={styles.stepsValue}>
-                        {todayTotals.steps.toLocaleString()}
-                    </Text>
+                    <View style={styles.heroBody}>
+                        <View style={styles.heroStats}>
+                            <Text style={styles.stepsValue}>
+                                {todayTotals.steps.toLocaleString()}
+                            </Text>
 
-                    <View style={styles.goalRow}>
-                        <Text style={styles.mutedText}>
-                            Daily goal: 10,000 steps
-                        </Text>
-                        <Text style={styles.goalPercent}>
-                            {stepProgress.toFixed(1)}%
-                        </Text>
+                            <Text style={styles.heroDescription}>
+                                steps completed
+                            </Text>
+
+                            <View style={styles.heroDivider} />
+
+                            <Text style={styles.remainingSteps}>
+                                {goalReached
+                                    ? 'Daily goal completed!'
+                                    : `${remainingSteps.toLocaleString()} steps to go`}
+                            </Text>
+                        </View>
+
+                        <StepProgressRing progress={stepProgress} />
                     </View>
 
                     <View style={styles.progressTrack}>
@@ -151,7 +205,15 @@ export default function DashboardScreen() {
                             ]}
                         />
                     </View>
+
+                    <View style={styles.heroFooter}>
+                        <Text style={styles.mutedText}>Daily target</Text>
+                        <Text style={styles.goalPercent}>
+                            {stepProgress.toFixed(1)}% completed
+                        </Text>
+                    </View>
                 </View>
+
 
                 {/* Activity summary */}
                 <View style={styles.sectionHeading}>
@@ -232,40 +294,64 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
     },
+
     content: {
         paddingHorizontal: spacing.lg,
-        paddingTop: spacing.lg,
-        paddingBottom: spacing.xxl,
+        paddingTop: spacing.md,
+        paddingBottom: spacing.lg,
     },
+
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: spacing.xxl,
+        marginBottom: spacing.xl,
+    },
+    brandRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+    },
+
+    brandText: {
+        justifyContent: 'center',
+    },
+
+    headerBadge: {
+        width: 46,
+        height: 46,
+        borderRadius: 16,
+        backgroundColor: '#E1EDFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: colors.border,
     },
     eyebrow: {
         color: colors.secondaryText,
-        fontSize: typography.small,
-        fontWeight: '600',
-        letterSpacing: 1.4,
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1.2,
+        marginTop: 3,
     },
+
     title: {
         color: colors.text,
-        fontSize: typography.title,
+        fontSize: 24,
         fontWeight: '800',
-        marginTop: spacing.xs,
-        letterSpacing: -0.5,
+        letterSpacing: -0.6,
     },
+
     logo: {
-        width: 50,
-        height: 50,
-        borderRadius: 17,
-        backgroundColor: '#DCE9FF',
+        width: 44,
+        height: 44,
+        borderRadius: 15,
+        backgroundColor: colors.primary,
         alignItems: 'center',
         justifyContent: 'center',
     },
     intro: {
-        marginBottom: spacing.xl,
+        marginBottom: spacing.lg,
     },
     greeting: {
         color: colors.text,
@@ -300,6 +386,108 @@ const styles = StyleSheet.create({
         padding: spacing.xl,
         marginBottom: spacing.xxl,
     },
+
+    heroTopRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: spacing.sm,
+    },
+
+    heroTitleGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+        flex: 1,
+    },
+
+    goalBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.xs,
+        backgroundColor: '#DDF7EF',
+        paddingHorizontal: spacing.sm,
+        paddingVertical: spacing.xs,
+        borderRadius: 20,
+    },
+
+    goalBadgeText: {
+        color: colors.steps,
+        fontSize: typography.small,
+        fontWeight: '700',
+    },
+
+    heroBody: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: spacing.sm,
+        marginTop: spacing.xl,
+        marginBottom: spacing.lg,
+    },
+
+    heroStats: {
+        flex: 1,
+        minWidth: 0,
+    },
+
+    heroDescription: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
+        marginTop: spacing.xs,
+    },
+
+    heroDivider: {
+        width: 36,
+        height: 3,
+        borderRadius: 2,
+        backgroundColor: '#DDF7EF',
+        marginTop: spacing.md,
+        marginBottom: spacing.sm,
+    },
+
+    heroFooter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: spacing.sm,
+        marginTop: spacing.md,
+    },
+
+
+    ringOuter: {
+        width: 112,
+        height: 112,
+        borderRadius: 56,
+        backgroundColor: '#DDF7EF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 5,
+        borderColor: colors.steps,
+    },
+
+    ringInner: {
+        width: 94,
+        height: 94,
+        borderRadius: 47,
+        backgroundColor: colors.surface,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    ringPercent: {
+        color: colors.text,
+        fontSize: 19,
+        fontWeight: '800',
+        marginTop: 2,
+    },
+
+    ringLabel: {
+        color: colors.secondaryText,
+        fontSize: 10,
+        fontWeight: '500',
+    },
+
     cardHeading: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -379,60 +567,84 @@ const styles = StyleSheet.create({
         gap: spacing.md,
         marginBottom: spacing.xl,
     },
+
     metricCard: {
         flex: 1,
         minWidth: 0,
         backgroundColor: colors.surface,
-        borderRadius: 20,
+        borderRadius: 22,
         borderWidth: 1,
         borderColor: colors.border,
-        padding: spacing.md,
+        padding: spacing.lg,
+        overflow: 'hidden',
     },
+
+
     caloriesIcon: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
+        width: 46,
+        height: 46,
+        borderRadius: 16,
         backgroundColor: '#FFF0D6',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: spacing.lg,
+        marginBottom: spacing.md,
+        borderWidth: 1,
+        borderColor: '#FFE4B5',
     },
+
     waterIcon: {
-        width: 44,
-        height: 44,
-        borderRadius: 14,
+        width: 46,
+        height: 46,
+        borderRadius: 16,
         backgroundColor: '#E1EDFF',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: spacing.lg,
+        marginBottom: spacing.md,
+        borderWidth: 1,
+        borderColor: '#CFE0FF',
     },
+
+
     metricValue: {
         color: colors.text,
-        fontSize: 25,
+        fontSize: 28,
         fontWeight: '800',
-        marginTop: spacing.md,
+        marginTop: spacing.sm,
+        letterSpacing: -0.8,
     },
+
+
     unit: {
         color: colors.secondaryText,
         fontSize: typography.small,
+        fontWeight: '600',
         marginTop: spacing.xs,
     },
+
+
     tipCard: {
         flexDirection: 'row',
         alignItems: 'flex-start',
         gap: spacing.md,
         backgroundColor: '#EAF1FF',
-        borderRadius: 20,
-        padding: spacing.lg,
+        borderRadius: 22,
+        borderWidth: 1,
+        borderColor: '#D7E5FF',
+        padding: spacing.xl,
     },
+
+
     tipIcon: {
-        width: 42,
-        height: 42,
-        borderRadius: 14,
+        width: 46,
+        height: 46,
+        borderRadius: 16,
         backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#D7E5FF',
         alignItems: 'center',
         justifyContent: 'center',
     },
+
     tipContent: {
         flex: 1,
     },
@@ -446,5 +658,11 @@ const styles = StyleSheet.create({
         color: colors.secondaryText,
         fontSize: typography.body,
         lineHeight: 22,
+    },
+    remainingSteps: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
+        marginTop: spacing.sm,
+        fontWeight: '500',
     },
 });
