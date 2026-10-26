@@ -28,6 +28,20 @@ export async function getDatabase(): Promise<HealthMateDatabase> {
                         water INTEGER NOT NULL
                     );
                 `);
+        await db.runAsync(`
+    CREATE TABLE IF NOT EXISTS daily_goals (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        steps_goal INTEGER NOT NULL DEFAULT 8000,
+        calories_goal INTEGER NOT NULL DEFAULT 500,
+        water_goal INTEGER NOT NULL DEFAULT 2000
+    );
+`);
+
+        await db.runAsync(`
+    INSERT OR IGNORE INTO daily_goals
+        (id, steps_goal, calories_goal, water_goal)
+    VALUES (1, 8000, 500, 2000);
+`);
 
         console.log('[DB] Database ready.');
         return db;

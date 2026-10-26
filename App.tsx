@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,10 +5,17 @@ import { Ionicons } from '@expo/vector-icons';
 import DashboardScreen from './src/screens/DashboardScreen';
 import RecordsScreen from './src/screens/RecordsScreen';
 import AddRecordScreen from './src/screens/AddRecordScreen';
+import StatisticsScreen from './src/screens/StatisticsScreen';
+import DailyGoalsScreen from './src/screens/DailyGoalsScreen';
 import colors from './src/theme/colors';
 import spacing from './src/theme/spacing';
 
-type ScreenName = 'dashboard' | 'records' | 'addRecord';
+type ScreenName =
+  | 'dashboard'
+  | 'records'
+  | 'statistics'
+  | 'dailyGoals'
+  | 'addRecord';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] =
@@ -31,6 +37,18 @@ export default function App() {
       activeIcon: 'document-text' as const,
     },
     {
+      name: 'statistics' as const,
+      label: 'Statistics',
+      icon: 'bar-chart-outline' as const,
+      activeIcon: 'bar-chart' as const,
+    },
+    {
+      name: 'dailyGoals' as const,
+      label: 'Daily Goals',
+      icon: 'flag-outline' as const,
+      activeIcon: 'flag' as const,
+    },
+    {
       name: 'addRecord' as const,
       label: 'Add record',
       icon: 'add-circle-outline' as const,
@@ -45,6 +63,10 @@ export default function App() {
           <DashboardScreen />
         ) : currentScreen === 'records' ? (
           <RecordsScreen />
+        ) : currentScreen === 'statistics' ? (
+          <StatisticsScreen />
+        ) : currentScreen === 'dailyGoals' ? (
+          <DailyGoalsScreen />
         ) : (
           <AddRecordScreen />
         )}
@@ -99,43 +121,51 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
+
   navigation: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    paddingHorizontal: spacing.sm,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.lg,
+    paddingHorizontal: 2,
+    paddingTop: 8,
+    paddingBottom: 8,
     elevation: 12,
     shadowColor: '#172B4D',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.06,
     shadowRadius: 12,
   },
+
   tab: {
     flex: 1,
+    minWidth: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.xs,
-    minHeight: 62,
-    borderRadius: 16,
+    gap: 4,
+    minHeight: 56,
+    borderRadius: 12,
   },
+
   tabLabel: {
-    fontSize: 12,
+    fontSize: 10,
     color: colors.secondaryText,
     fontWeight: '500',
+    textAlign: 'center',
   },
+
   activeLabel: {
     color: colors.primary,
     fontWeight: '700',
   },
+
   activeIndicator: {
     position: 'absolute',
-    bottom: -spacing.lg,
+    top: -8,
     height: 3,
-    width: 42,
+    width: 28,
     borderRadius: 3,
     backgroundColor: colors.primary,
   },
+
 });

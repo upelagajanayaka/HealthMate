@@ -50,3 +50,6 @@ yarn-error.*
 *.sqlite
 *.sqlite3
 npm-debug.log*
+
+# Local Android installer files
+*.apk

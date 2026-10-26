@@ -8,6 +8,7 @@ import {
     Pressable,
     Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { addHealthRecord } from '../database/healthRecordService';
 import colors from '../theme/colors';
@@ -121,23 +122,65 @@ export default function AddRecordScreen() {
             contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
         >
-            <Text style={styles.title}>Add Health Record</Text>
-            <Text style={styles.subtitle}>
-                Record your daily wellness activity.
-            </Text>
+            <View style={styles.header}>
+                <View style={styles.headerIcon}>
+                    <Ionicons
+                        name="add-circle-outline"
+                        size={28}
+                        color={colors.primary}
+                    />
+                </View>
+
+                <View style={styles.headerText}>
+                    <Text style={styles.title}>Add Health Record</Text>
+                    <Text style={styles.subtitle}>
+                        Track your daily wellness progress.
+                    </Text>
+                </View>
+            </View>
+
 
             <View style={styles.card}>
-                <Text style={styles.label}>Record date</Text>
+                <View style={styles.fieldHeader}>
+                    <View style={styles.dateIcon}>
+                        <Ionicons
+                            name="calendar-outline"
+                            size={22}
+                            color={colors.primary}
+                        />
+                    </View>
+                    <View style={styles.fieldHeading}>
+                        <Text style={styles.label}>Record date</Text>
+                        <Text style={styles.fieldHint}>
+                            Use the YYYY-MM-DD format
+                        </Text>
+                    </View>
+                </View>
+
                 <TextInput
                     style={styles.input}
                     value={date}
                     onChangeText={setDate}
                     placeholder="YYYY-MM-DD"
+                    keyboardType="numbers-and-punctuation"
+                    maxLength={10}
+                    autoCapitalize="none"
                 />
             </View>
 
+
+
             <View style={styles.card}>
-                <Text style={styles.label}>Steps</Text>
+                <View style={styles.fieldHeader}>
+                    <View style={styles.stepsIcon}>
+                        <Ionicons name="footsteps-outline" size={22} color="#08A88A" />
+                    </View>
+                    <View style={styles.fieldHeading}>
+                        <Text style={styles.label}>Steps</Text>
+                        <Text style={styles.fieldHint}>Daily steps completed</Text>
+                    </View>
+                </View>
+
                 <TextInput
                     style={styles.input}
                     value={steps}
@@ -147,8 +190,19 @@ export default function AddRecordScreen() {
                 />
             </View>
 
+
+
             <View style={styles.card}>
-                <Text style={styles.label}>Calories burned</Text>
+                <View style={styles.fieldHeader}>
+                    <View style={styles.caloriesIcon}>
+                        <Ionicons name="flame-outline" size={22} color="#F59E0B" />
+                    </View>
+                    <View style={styles.fieldHeading}>
+                        <Text style={styles.label}>Calories burned</Text>
+                        <Text style={styles.fieldHint}>Daily energy burned (kcal)</Text>
+                    </View>
+                </View>
+
                 <TextInput
                     style={styles.input}
                     value={calories}
@@ -158,8 +212,19 @@ export default function AddRecordScreen() {
                 />
             </View>
 
+
+
             <View style={styles.card}>
-                <Text style={styles.label}>Water intake (ml)</Text>
+                <View style={styles.fieldHeader}>
+                    <View style={styles.waterIcon}>
+                        <Ionicons name="water-outline" size={22} color="#3678D4" />
+                    </View>
+                    <View style={styles.fieldHeading}>
+                        <Text style={styles.label}>Water intake</Text>
+                        <Text style={styles.fieldHint}>Daily water consumed (ml)</Text>
+                    </View>
+                </View>
+
                 <TextInput
                     style={styles.input}
                     value={water}
@@ -167,14 +232,26 @@ export default function AddRecordScreen() {
                     placeholder="e.g. 2000"
                     keyboardType="number-pad"
                 />
-
             </View>
+
+
             <Pressable
                 style={styles.saveButton}
                 onPress={handleSave}
             >
+                <Ionicons
+                    name="checkmark-circle-outline"
+                    size={22}
+                    color="#FFFFFF"
+                />
                 <Text style={styles.saveButtonText}>Save Health Record</Text>
+                <Ionicons
+                    name="arrow-forward"
+                    size={20}
+                    color="#FFFFFF"
+                />
             </Pressable>
+
 
 
         </ScrollView>
@@ -191,16 +268,32 @@ const styles = StyleSheet.create({
         padding: spacing.lg,
         paddingBottom: spacing.xxxl,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: spacing.xl,
+        gap: spacing.md,
+    },
+    headerIcon: {
+        width: 54,
+        height: 54,
+        borderRadius: 16,
+        backgroundColor: '#E8F0FE',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    headerText: {
+        flex: 1,
+    },
     title: {
         fontSize: typography.title,
         fontWeight: '700',
         color: colors.text,
-        marginBottom: spacing.sm,
+        marginBottom: spacing.xs,
     },
     subtitle: {
         fontSize: typography.body,
         color: colors.secondaryText,
-        marginBottom: spacing.xl,
     },
     card: {
         backgroundColor: colors.surface,
@@ -227,15 +320,66 @@ const styles = StyleSheet.create({
     },
     saveButton: {
         backgroundColor: colors.primary,
-        padding: spacing.lg,
-        borderRadius: 12,
+        paddingVertical: spacing.lg,
+        paddingHorizontal: spacing.xl,
+        borderRadius: 14,
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.md,
         marginTop: spacing.sm,
+        marginBottom: spacing.lg,
     },
 
     saveButtonText: {
         color: '#FFFFFF',
         fontSize: typography.subtitle,
         fontWeight: '700',
+    },
+    fieldHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.md,
+        marginBottom: spacing.lg,
+    },
+    stepsIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        backgroundColor: '#DDF7EF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fieldHeading: {
+        flex: 1,
+    },
+    fieldHint: {
+        fontSize: typography.small,
+        color: colors.secondaryText,
+        marginTop: spacing.xs,
+    },
+    caloriesIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        backgroundColor: '#FFF0D9',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    waterIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        backgroundColor: '#E5EEFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    dateIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 12,
+        backgroundColor: '#E5EEFF',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });

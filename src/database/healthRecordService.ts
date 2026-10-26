@@ -1,4 +1,3 @@
-
 export type HealthRecord = {
     id: number;
     date: string;
@@ -95,4 +94,41 @@ export async function getTodayHealthRecords(): Promise<HealthRecord[]> {
 
     return records;
 }
+
+export async function getWeeklyHealthRecords(): Promise<HealthRecord[]> {
+    const db = await getDatabase();
+
+    const today = new Date();
+    const endDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+    );
+
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 6);
+
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    };
+
+    const startDateString = formatDate(startDate);
+    const endDateString = formatDate(endDate);
+
+    const records = await db.getAllAsync<HealthRecord>(
+        `SELECT id, date, steps, calories, water
+         FROM health_records
+         WHERE date >= ? AND date <= ?
+         ORDER BY date ASC, id ASC`,
+        startDateString,
+        endDateString
+    );
+
+    return records;
+}
+
 

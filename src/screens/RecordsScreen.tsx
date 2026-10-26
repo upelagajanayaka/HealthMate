@@ -38,6 +38,21 @@ export default function RecordsScreen() {
     const [editWater, setEditWater] = useState('');
     const [savingEdit, setSavingEdit] = useState(false);
 
+    const totalSteps = records.reduce(
+        (total, record) => total + record.steps,
+        0
+    );
+
+    const totalCalories = records.reduce(
+        (total, record) => total + record.calories,
+        0
+    );
+
+    const totalWater = records.reduce(
+        (total, record) => total + record.water,
+        0
+    );
+
     const handleEditPress = (record: HealthRecord) => {
         setEditingRecord(record);
         setEditDate(record.date);
@@ -171,6 +186,70 @@ export default function RecordsScreen() {
                     Review your daily health activity in one place.
                 </Text>
 
+                <View style={styles.summaryCard}>
+                    <View style={styles.summaryHeader}>
+                        <View>
+                            <Text style={styles.summaryLabel}>
+                                YOUR HEALTH OVERVIEW
+                            </Text>
+                            <Text style={styles.summaryTitle}>
+                                All-time summary
+                            </Text>
+                        </View>
+
+                        <View style={styles.summaryIcon}>
+                            <Ionicons
+                                name="analytics-outline"
+                                size={23}
+                                color={colors.primary}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={styles.summaryGrid}>
+                        <View style={styles.summaryMetric}>
+                            <View style={[styles.summaryMetricIcon, { backgroundColor: '#E0F7F1' }]}>
+                                <Ionicons name="footsteps-outline" size={19} color={colors.steps} />
+                            </View>
+                            <Text style={styles.summaryValue}>
+                                {totalSteps.toLocaleString()}
+                            </Text>
+                            <Text style={styles.summaryMetricLabel}>Total steps</Text>
+                        </View>
+
+                        <View style={styles.summaryMetric}>
+                            <View style={[styles.summaryMetricIcon, { backgroundColor: '#FFF2DF' }]}>
+                                <Ionicons name="flame-outline" size={19} color={colors.calories} />
+                            </View>
+                            <Text style={styles.summaryValue}>
+                                {totalCalories.toLocaleString()}
+                            </Text>
+                            <Text style={styles.summaryMetricLabel}>Calories</Text>
+                        </View>
+
+                        <View style={styles.summaryMetric}>
+                            <View style={[styles.summaryMetricIcon, { backgroundColor: '#E1EDFF' }]}>
+                                <Ionicons name="water-outline" size={19} color={colors.water} />
+                            </View>
+                            <Text style={styles.summaryValue}>
+                                {totalWater.toLocaleString()}
+                            </Text>
+                            <Text style={styles.summaryMetricLabel}>Water (ml)</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.summaryFooter}>
+                        <Ionicons
+                            name="document-text-outline"
+                            size={17}
+                            color={colors.secondaryText}
+                        />
+                        <Text style={styles.summaryFooterText}>
+                            {records.length} {records.length === 1 ? 'record' : 'records'} saved
+                        </Text>
+                    </View>
+                </View>
+
                 {loading ? (
                     <View style={styles.card}>
                         <ActivityIndicator
@@ -221,7 +300,7 @@ export default function RecordsScreen() {
                                 </View>
 
                                 <View style={styles.recordDateContainer}>
-                                    <Text style={styles.recordDate}>
+                                    <Text style={styles.recordDate} numberOfLines={1}>
                                         {record.date}
                                     </Text>
                                     <Text style={styles.recordCaption}>
@@ -262,53 +341,56 @@ export default function RecordsScreen() {
 
                             </View>
 
+
                             <View style={styles.recordMetrics}>
                                 <View style={styles.recordMetric}>
-                                    <Ionicons
-                                        name="footsteps-outline"
-                                        size={21}
-                                        color={colors.steps}
-                                    />
+                                    <View style={styles.stepsMetricIcon}>
+                                        <Ionicons
+                                            name="footsteps-outline"
+                                            size={20}
+                                            color={colors.steps}
+                                        />
+                                    </View>
                                     <Text style={styles.recordMetricValue}>
                                         {record.steps.toLocaleString()}
                                     </Text>
-                                    <Text style={styles.recordMetricLabel}>
-                                        Steps
-                                    </Text>
+                                    <Text style={styles.recordMetricLabel}>Steps</Text>
                                 </View>
 
                                 <View style={styles.recordMetric}>
-                                    <Ionicons
-                                        name="flame-outline"
-                                        size={21}
-                                        color={colors.calories}
-                                    />
+                                    <View style={styles.caloriesMetricIcon}>
+                                        <Ionicons
+                                            name="flame-outline"
+                                            size={20}
+                                            color={colors.calories}
+                                        />
+                                    </View>
                                     <Text style={styles.recordMetricValue}>
                                         {record.calories.toLocaleString()}
                                     </Text>
-                                    <Text style={styles.recordMetricLabel}>
-                                        Calories
-                                    </Text>
+                                    <Text style={styles.recordMetricLabel}>Calories</Text>
                                 </View>
 
                                 <View style={styles.recordMetric}>
-                                    <Ionicons
-                                        name="water-outline"
-                                        size={21}
-                                        color={colors.water}
-                                    />
+                                    <View style={styles.waterMetricIcon}>
+                                        <Ionicons
+                                            name="water-outline"
+                                            size={20}
+                                            color={colors.water}
+                                        />
+                                    </View>
                                     <Text style={styles.recordMetricValue}>
                                         {record.water.toLocaleString()}
                                     </Text>
-                                    <Text style={styles.recordMetricLabel}>
-                                        Water (ml)
-                                    </Text>
+                                    <Text style={styles.recordMetricLabel}>Water (ml)</Text>
                                 </View>
                             </View>
+
                         </View>
                     ))
                 )}
             </ScrollView>
+
 
             <Modal
                 visible={editingRecord !== null}
@@ -318,13 +400,40 @@ export default function RecordsScreen() {
             >
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalCard}>
-                        <Text style={styles.modalTitle}>
-                            Edit Health Record
-                        </Text>
+                        <View style={styles.modalHeader}>
+                            <View style={styles.modalHeadingGroup}>
+                                <View style={styles.modalHeaderIcon}>
+                                    <Ionicons
+                                        name="create-outline"
+                                        size={23}
+                                        color={colors.primary}
+                                    />
+                                </View>
 
-                        <Text style={styles.modalSubtitle}>
-                            Update your saved health information.
-                        </Text>
+                                <View style={styles.modalHeadingText}>
+                                    <Text style={styles.modalTitle}>
+                                        Edit Record
+                                    </Text>
+                                    <Text style={styles.modalSubtitle}>
+                                        Update your daily health details
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <Pressable
+                                style={styles.modalCloseButton}
+                                onPress={() => setEditingRecord(null)}
+                                disabled={savingEdit}
+                                accessibilityRole="button"
+                                accessibilityLabel="Close edit record"
+                            >
+                                <Ionicons
+                                    name="close"
+                                    size={22}
+                                    color={colors.secondaryText}
+                                />
+                            </Pressable>
+                        </View>
 
                         <ScrollView
                             keyboardShouldPersistTaps="handled"
@@ -392,7 +501,8 @@ export default function RecordsScreen() {
                     </View>
                 </View>
             </Modal>
-        </View>
+
+        </View >
     );
 }
 
@@ -465,45 +575,95 @@ const styles = StyleSheet.create({
         padding: spacing.lg,
         marginBottom: spacing.md,
     },
+
     recordHeader: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: spacing.md,
+        gap: spacing.sm,
         marginBottom: spacing.lg,
     },
+
+
     recordDateIcon: {
-        width: 42,
-        height: 42,
-        borderRadius: 13,
+        width: 44,
+        height: 44,
+        borderRadius: 14,
         backgroundColor: '#E1EDFF',
         alignItems: 'center',
         justifyContent: 'center',
     },
+
+
     recordDateContainer: {
         flex: 1,
+        minWidth: 0,
     },
+
+
+
     recordDate: {
         color: colors.text,
-        fontSize: typography.subtitle,
+        fontSize: typography.body,
         fontWeight: '700',
+        flexShrink: 1,
     },
+
     recordCaption: {
         color: colors.secondaryText,
         fontSize: typography.small,
         marginTop: spacing.xs,
     },
+
+
     recordMetrics: {
         flexDirection: 'row',
+        gap: spacing.sm,
         borderTopWidth: 1,
         borderTopColor: colors.border,
         paddingTop: spacing.lg,
-        gap: spacing.sm,
     },
+
     recordMetric: {
         flex: 1,
+        minWidth: 0,
         alignItems: 'center',
+        backgroundColor: colors.background,
+        borderRadius: 14,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.xs,
         gap: spacing.xs,
     },
+
+    stepsMetricIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: '#E0F7F1',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.xs,
+    },
+
+    caloriesMetricIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: '#FFF2DF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.xs,
+    },
+
+    waterMetricIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: '#E1EDFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.xs,
+    },
+
     recordMetricValue: {
         color: colors.text,
         fontSize: typography.subtitle,
@@ -514,22 +674,25 @@ const styles = StyleSheet.create({
         fontSize: typography.small,
         textAlign: 'center',
     },
+
     editButton: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         gap: spacing.xs,
-        paddingHorizontal: spacing.md,
+        paddingHorizontal: spacing.sm,
         paddingVertical: spacing.sm,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: colors.border,
-        backgroundColor: colors.surface,
+        borderColor: '#C7DAF8',
+        backgroundColor: '#F0F6FF',
     },
     editButtonText: {
         color: colors.primary,
-        fontSize: typography.body,
-        fontWeight: '600',
+        fontSize: typography.small,
+        fontWeight: '700',
     },
+
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(15, 23, 42, 0.45)',
@@ -595,22 +758,142 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
 
+
     deleteButton: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         gap: spacing.xs,
+        paddingHorizontal: spacing.sm,
         paddingVertical: spacing.sm,
-        paddingHorizontal: spacing.md,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#FECACA',
-        backgroundColor: '#FEF2F2',
+        backgroundColor: '#FFF5F5',
     },
     deleteButtonText: {
         color: '#DC2626',
-        fontSize: typography.body,
-        fontWeight: '600',
+        fontSize: typography.small,
+        fontWeight: '700',
     },
+
+    summaryCard: {
+        backgroundColor: colors.surface,
+        borderRadius: 22,
+        borderWidth: 1,
+        borderColor: colors.border,
+        padding: spacing.lg,
+        marginBottom: spacing.xl,
+    },
+    summaryHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: spacing.lg,
+    },
+    summaryLabel: {
+        color: colors.secondaryText,
+        fontSize: typography.small,
+        fontWeight: '600',
+        letterSpacing: 1,
+    },
+    summaryTitle: {
+        color: colors.text,
+        fontSize: typography.heading,
+        fontWeight: '700',
+        marginTop: spacing.xs,
+    },
+    summaryIcon: {
+        width: 44,
+        height: 44,
+        borderRadius: 14,
+        backgroundColor: '#E1EDFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    summaryGrid: {
+        flexDirection: 'row',
+        gap: spacing.sm,
+    },
+    summaryMetric: {
+        flex: 1,
+        minWidth: 0,
+        backgroundColor: colors.background,
+        borderRadius: 14,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.xs,
+        alignItems: 'center',
+    },
+    summaryMetricIcon: {
+        width: 36,
+        height: 36,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: spacing.sm,
+    },
+    summaryValue: {
+        color: colors.text,
+        fontSize: typography.subtitle,
+        fontWeight: '700',
+        textAlign: 'center',
+    },
+    summaryMetricLabel: {
+        color: colors.secondaryText,
+        fontSize: 11,
+        textAlign: 'center',
+        marginTop: spacing.xs,
+    },
+    summaryFooter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: spacing.sm,
+        borderTopWidth: 1,
+        borderTopColor: colors.border,
+        marginTop: spacing.lg,
+        paddingTop: spacing.md,
+    },
+    summaryFooterText: {
+        color: colors.secondaryText,
+        fontSize: typography.body,
+        fontWeight: '500',
+    },
+
+    modalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: spacing.lg,
+    },
+
+    modalHeadingGroup: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        gap: spacing.md,
+    },
+
+    modalHeaderIcon: {
+        width: 46,
+        height: 46,
+        borderRadius: 15,
+        backgroundColor: '#E1EDFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    modalHeadingText: {
+        flex: 1,
+    },
+
+    modalCloseButton: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        backgroundColor: colors.background,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
 
 });
