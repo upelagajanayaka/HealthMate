@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import DashboardScreen from './src/screens/DashboardScreen';
@@ -9,6 +9,7 @@ import StatisticsScreen from './src/screens/StatisticsScreen';
 import DailyGoalsScreen from './src/screens/DailyGoalsScreen';
 import colors from './src/theme/colors';
 import spacing from './src/theme/spacing';
+import { exportHealthMateDatabase } from './src/database/database';
 
 type ScreenName =
   | 'dashboard'
@@ -22,6 +23,22 @@ export default function App() {
     useState<ScreenName>('dashboard');
 
   const [refreshKey, setRefreshKey] = useState(0);
+  const [exporting, setExporting] = useState(false);
+
+  const handleExportDatabase = async () => {
+    try {
+      setExporting(true);
+      await exportHealthMateDatabase();
+    } catch (error) {
+      console.error('[DB] Export failed:', error);
+      Alert.alert(
+        'Export Failed',
+        error instanceof Error ? error.message : String(error)
+      );
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const tabs = [
     {
@@ -72,9 +89,24 @@ export default function App() {
         )}
       </View>
 
+      <View style={styles.exportBar}>
+        <Pressable
+          style={styles.exportButton}
+          onPress={handleExportDatabase}
+          disabled={exporting}
+        >
+          <Ionicons name="download-outline" size={18} color="#FFFFFF" />
+          <Text style={styles.exportButtonText}>
+            {exporting ? 'Exporting...' : 'Export Database'}
+          </Text>
+        </Pressable>
+      </View>
+
       <View style={styles.navigation}>
         {tabs.map((tab) => {
           const active = currentScreen === tab.name;
+
+
 
           return (
             <Pressable
@@ -166,6 +198,28 @@ const styles = StyleSheet.create({
     width: 28,
     borderRadius: 3,
     backgroundColor: colors.primary,
+  },
+  exportBar: {
+    alignItems: 'center',
+    paddingVertical: 8,
+    backgroundColor: colors.background,
+  },
+
+  exportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+
+  exportButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '600',
   },
 
 });

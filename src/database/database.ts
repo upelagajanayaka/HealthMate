@@ -1,5 +1,6 @@
 import * as SQLite from 'expo-sqlite';
-
+import * as FileSystem from 'expo-file-system/legacy';
+import * as Sharing from 'expo-sharing';
 const DATABASE_NAME = 'healthmate.db';
 
 type HealthMateDatabase = Awaited<
@@ -17,6 +18,9 @@ export async function getDatabase(): Promise<HealthMateDatabase> {
         DATABASE_NAME,
         { useNewConnection: true }
       );
+      console.log('[DB] Database path:', db.databasePath);
+      console.log('[DB] Document directory:', FileSystem.documentDirectory);
+      console.log('[DB] Cache directory:', FileSystem.cacheDirectory);
 
       try {
         await db.runAsync(`
@@ -56,4 +60,35 @@ export async function getDatabase(): Promise<HealthMateDatabase> {
   }
 
   return databasePromise;
+}
+export async function exportHealthMateDatabase(): Promise<void> {
+  const db = await getDatabase();
+
+  // Make sure recent database changes are written to the main file.
+  await db.execAsync('PRAGMA wal_checkpoint(FULL);');
+
+  const sourcePath = db.databasePath.startsWith('file://')
+    ? db.databasePath
+    : `file://${db.databasePath}`;
+  const exportPath = `${FileSystem.cacheDirectory}${DATABASE_NAME}`;
+
+  if (!sourcePath) {
+    throw new Error('Could not locate the HealthMate database.');
+  }
+
+  await FileSystem.copyAsync({
+    from: sourcePath,
+    to: exportPath,
+  });
+
+  const available = await Sharing.isAvailableAsync();
+
+  if (!available) {
+    throw new Error('Sharing is not available on this device.');
+  }
+
+  await Sharing.shareAsync(exportPath, {
+    mimeType: 'application/vnd.sqlite3',
+    dialogTitle: 'Export HealthMate Database',
+  });
 }

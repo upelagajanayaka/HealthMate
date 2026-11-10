@@ -29,6 +29,7 @@ export default function RecordsScreen() {
     const [records, setRecords] = useState<HealthRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState(false);
+    const [searchDate, setSearchDate] = useState('');
 
     const [editingRecord, setEditingRecord] =
         useState<HealthRecord | null>(null);
@@ -42,6 +43,13 @@ export default function RecordsScreen() {
         (total, record) => total + record.steps,
         0
     );
+
+    const normalizedSearchDate = searchDate.replace(/\D/g, '');
+
+    const filteredRecords = records.filter((record) =>
+        record.date.replace(/\D/g, '').includes(normalizedSearchDate)
+    );
+
 
     const totalCalories = records.reduce(
         (total, record) => total + record.calories,
@@ -185,6 +193,35 @@ export default function RecordsScreen() {
                 <Text style={styles.subtitle}>
                     Review your daily health activity in one place.
                 </Text>
+                <View style={styles.searchContainer}>
+                    <Ionicons
+                        name="search-outline"
+                        size={20}
+                        color={colors.secondaryText}
+                    />
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search by date (YYYY-MM-DD)"
+                        placeholderTextColor={colors.secondaryText}
+                        value={searchDate}
+                        onChangeText={setSearchDate}
+                        autoCapitalize="none"
+                        accessibilityLabel="Search health records by date"
+                    />
+                    {searchDate.length > 0 && (
+                        <Pressable
+                            onPress={() => setSearchDate('')}
+                            accessibilityRole="button"
+                            accessibilityLabel="Clear date search"
+                        >
+                            <Ionicons
+                                name="close-circle"
+                                size={20}
+                                color={colors.secondaryText}
+                            />
+                        </Pressable>
+                    )}
+                </View>
 
                 <View style={styles.summaryCard}>
                     <View style={styles.summaryHeader}>
@@ -269,7 +306,7 @@ export default function RecordsScreen() {
                             Please try opening this screen again.
                         </Text>
                     </View>
-                ) : records.length === 0 ? (
+                ) : filteredRecords.length === 0 ? (
                     <View style={styles.card}>
                         <View style={styles.emptyIcon}>
                             <Ionicons
@@ -280,15 +317,16 @@ export default function RecordsScreen() {
                         </View>
 
                         <Text style={styles.emptyTitle}>
-                            No records yet
+                            {searchDate.trim() ? 'No matching records' : 'No records yet'}
                         </Text>
                         <Text style={styles.description}>
-                            Add your daily steps, calories burned, and water
-                            intake to start building your health history.
+                            {searchDate.trim()
+                                ? 'No health records match your search. Try another date or clear the search.'
+                                : 'Add your daily steps, calories burned, and water intake to start building your health history.'}
                         </Text>
                     </View>
                 ) : (
-                    records.map((record) => (
+                    filteredRecords.map((record) => (
                         <View key={record.id} style={styles.recordCard}>
                             <View style={styles.recordHeader}>
                                 <View style={styles.recordDateIcon}>
@@ -518,6 +556,26 @@ const styles = StyleSheet.create({
         paddingBottom: spacing.xxl,
         flexGrow: 1,
     },
+
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: colors.surface,
+        borderWidth: 1,
+        borderColor: colors.border,
+        borderRadius: 14,
+        paddingHorizontal: spacing.md,
+        marginBottom: spacing.lg,
+        minHeight: 52,
+    },
+    searchInput: {
+        flex: 1,
+        color: colors.text,
+        fontSize: typography.body,
+        paddingVertical: spacing.md,
+        paddingHorizontal: spacing.sm,
+    },
+
     eyebrow: {
         color: colors.secondaryText,
         fontSize: typography.small,

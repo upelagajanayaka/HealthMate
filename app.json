@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "healthmate57",
+    "name": "HealthMate",
     "slug": "healthmate57",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,17 +12,24 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.upelagajanayaka.healthmate57"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite"
-    ]
+      "expo-sqlite",
+      "expo-sharing"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3e5c5b71-f3ad-4494-88be-d91b9e65149a"
+      }
+    }
   }
 }
